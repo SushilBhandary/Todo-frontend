@@ -1,15 +1,11 @@
-import Login from "./components/login";
-import Signup from "./components/signup";
-import Header from "./components/Header";
-import TodoForm from "./components/todoForm";
-import TodoList from "./components/todoList";
+// import Login from "./components/login";
+// import Signup from "./components/signup";
+import TodoPage from "./components/TodoPage";
 
 function App() {
   return (
     <div >
-      <Header/>
-      <TodoForm/>
-      <TodoList/>
+      <TodoPage/ >
     </div>
   );
 }
