@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div >
-      {!true ? ( toSingup ? <Signup setToSingup={setToSingup}/> : <Login setToSingup={setToSingup}/>) : (
+      {!islogin ? ( toSingup ? <Signup setToSingup={setToSingup}/> : <Login setToSingup={setToSingup} SetLogin={SetLogin}/>) : (
         <TodoPage/>
       )}
     </div>
