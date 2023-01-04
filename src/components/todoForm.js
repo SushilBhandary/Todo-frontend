@@ -1,4 +1,5 @@
 
+import axios from "axios";
 import { useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,9 +12,11 @@ const TodoForm = ({addTodo}) => {
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState([])
   const [open, setOpen] = useState(false);
-  const closeModal = () => setOpen(false);
   
-  
+  const closeModal = (e) => {
+    e.preventDefault()
+    setOpen(false)
+  };
 
   const removeTask = (index) => {
     setTasks( tasks.filter( (task, i) => i!==index) )
@@ -39,7 +42,7 @@ const TodoForm = ({addTodo}) => {
     
   }
   
-  const add = (e) => {
+  const add = async (e) => {
     e.preventDefault()
     if (titel === "" || tasks.length === 0) {
       toast.warn('Title/Tasks missing', {
@@ -53,12 +56,17 @@ const TodoForm = ({addTodo}) => {
         theme: "colored",
         });
     } else {
-      
+      const data = JSON.parse(localStorage.getItem("jwt"))
+      await axios.post(`http://localhost:8000/createtodo/${data.user._id}`, { todoName : titel, tasks})
+      .then( res => {
+        addTodo(res.data.todo)
+      })
+      .catch( e => console.log(e))
+      setTask("")
+      setTitle("")
+      setTasks([])
+      setOpen(false)
     }
-    addTodo({todo:titel, tasks, star : false, completed : false })
-    setTask("")
-    setTitle("")
-    setTasks([])
   }
 
   return(

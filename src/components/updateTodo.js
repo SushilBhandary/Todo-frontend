@@ -1,16 +1,16 @@
 
+import axios from "axios";
 import { useState } from "react"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const UpdateTodo = ({todoData, close, updateDatas}) => {
+const UpdateTodo = ({id, todoData, close, setData}) => {
   
-  console.log(todoData);
   const [titel, setTitle] = useState(todoData.todo)
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState(todoData.tasks)
-  
-   
+  const [star, setStar] = useState(todoData.star)
+  const [completed, setCompleted] = useState(todoData.completed)
 
   const removeTask = (index) => {
     setTasks( tasks.filter( (task, i) => i!==index) )
@@ -33,14 +33,24 @@ const UpdateTodo = ({todoData, close, updateDatas}) => {
       setTasks([...tasks, task])
       setTask("")
     }
-    
   }
 
-  const update = (e) => {
+  const update = async(e) => {
     e.preventDefault()
-    todoData.todo = titel
-    todoData.tasks = tasks
-    updateDatas(todoData)
+    const loadData = {
+      todo : titel,
+      tasks,
+      star,
+      completed
+    }
+    const data = JSON.parse(localStorage.getItem("jwt"))
+    await axios.put(`http://localhost:8000/edit-todo/${id}/${data.user._id}`,loadData)
+    .then( (rep) => {
+      console.log(rep);
+      setData( todoData.map( (item) => id === item._id ? rep.data.updatedTodo : item))
+    })
+    .catch( e => console.log(e))
+    
     close()
   }
 
@@ -52,6 +62,7 @@ const UpdateTodo = ({todoData, close, updateDatas}) => {
         </button>
       
         <h2 className="w-full text-3xl font-bold leading-tight">Todo</h2>
+        
         <div>
           <label className="block mb-1 ml-1">Title</label>
           <input value={titel} type="text" placeholder="Title"  onChange={e => setTitle(e.target.value)}  className="block w-full p-2 rounded border-2" />
@@ -70,14 +81,34 @@ const UpdateTodo = ({todoData, close, updateDatas}) => {
             <div className="flex rounded-lg border-lime-400 border-2  w-fit mt-1"> <h3 className="px-3">{task}</h3> <span onClick={() => removeTask(index)} className="text-sm p-1">&#10006;</span></div>
             </div>))}
         </div>
+        <div className="flex justify-between">
+          { star ? (
+            <div onClick={() => {setStar(!star)}} >
+              <span style={{fontSize:"300%", color:"yellow"}}> &#9733; </span>
+            </div>
+          ) : (
+            <div onClick={() => {setStar(!star)}} >
+              <span style={{fontSize:"300%", color:"yellow"}}> &#9734; </span>
+            </div>
+          ) }
+
+          { completed ? (
+            <div onClick={() => {setCompleted(!completed)}} >
+              <span style={{fontSize:"300%", color:"Green"}}> &#10004;</span>
+            </div>
+            
+          ) : (
+            <div onClick={() => {setCompleted(!completed)} }>
+            <span style={{fontSize:"300%", color:"green"}}> &#9744; </span>
+            </div>
+          ) }
+        </div>
         <div className="text-right">
           <button onClick={update}  className=" px-4 py-2 font-bold rounded shadow text-white bg-blue-500 focus:outline-none hover:bg-blue-600 ">Update Todo</button>
         </div>
       </form>
       <ToastContainer />
     </div>
-    
-    
   )
 }
 
