@@ -6,6 +6,7 @@ import { useState } from "react"
 const TodoPage = ({todoList}) => {
     
     const [data, setData] = useState(todoList ? todoList : [])
+    
     // ([{
     //     todo : "To Build Full stack Application",
     //     tasks : ["Create Backend", "Creats Frontend", "Work on integiration"],

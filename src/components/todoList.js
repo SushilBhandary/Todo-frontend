@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
@@ -7,13 +8,22 @@ const TodoList = ( {todoData,setData}) => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [passIndex, setPassIndex] = useState()
+  const [id, setId] =useState()
 
   const closeEditModal = () => {
     setEditOpen(false)
   };
 
-  const deleteData = (index) => {
-    setData( todoData.filter( (item, i) => i !== index ))
+  const deleteData = async(todoId) => {
+    const data = JSON.parse(localStorage.getItem("jwt"))
+    console.log(data);
+    console.log(data.user._id);
+    await axios.delete(`http://localhost:8000/delete-todo/${todoId}/${data.user._id}`)
+    .then( res => {
+      setData(res.data.todoList)
+    })
+    .catch()
+
   }
   
   return(
@@ -55,11 +65,11 @@ const TodoList = ( {todoData,setData}) => {
           ) }
           </div>
           <div className=" flex flex-col">
-            <button className="px-4 py-2 font-bold rounded bg-yellow-400 hover:bg-yellow-500 my-2" onClick={() => {setEditOpen(true);setPassIndex(index)}}>Edit</button>
+            <button className="px-4 py-2 font-bold rounded bg-yellow-400 hover:bg-yellow-500 my-2" onClick={() => {setEditOpen(true);setPassIndex(index); setId(todo._id)}}>Edit</button>
             <Popup open={editOpen}  modal nested>
-              <UpdateTodo id={todo._id} todoData={todoData[passIndex]} close={closeEditModal} setData={setData}/>
+              <UpdateTodo id={id} todoData={todoData[passIndex]} close={closeEditModal} setData={setData}/>
             </Popup>
-            <button onClick={() => {deleteData(index)} } className="px-4 py-2 font-bold rounded bg-red-500 hover:bg-red-600 my-2">Delete</button>
+            <button onClick={() => {deleteData(todo._id)} } className="px-4 py-2 font-bold rounded bg-red-500 hover:bg-red-600 my-2">Delete</button>
           </div>
         </div>
       </div>

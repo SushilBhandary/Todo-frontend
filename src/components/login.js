@@ -9,7 +9,7 @@ const Login = ({setToSingup}) => {
   const [islogin, SetLogin] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  let todoList
+  const [todoList, setTodoList] = useState([])
 
   const submit = async(e) => {
     e.preventDefault()
@@ -36,7 +36,7 @@ const Login = ({setToSingup}) => {
       localStorage.setItem("jwt", JSON.stringify(res.data))
       await axios.get(`http://localhost:8000/getalltodos/${res.data.user._id}`)
       .then( (res) => {
-        todoList = res.data.todoList
+        setTodoList( res.data.todoList)
         SetLogin(true)
       })
       .catch( e => console.log(e))

@@ -5,7 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const UpdateTodo = ({id, todoData, close, setData}) => {
-  
+  console.log(id);
+
   const [titel, setTitle] = useState(todoData.todo)
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState(todoData.tasks)
@@ -38,16 +39,18 @@ const UpdateTodo = ({id, todoData, close, setData}) => {
   const update = async(e) => {
     e.preventDefault()
     const loadData = {
-      todo : titel,
+      todoName : titel,
       tasks,
       star,
       completed
     }
     const data = JSON.parse(localStorage.getItem("jwt"))
+    console.log(loadData);
     await axios.put(`http://localhost:8000/edit-todo/${id}/${data.user._id}`,loadData)
     .then( (rep) => {
       console.log(rep);
-      setData( todoData.map( (item) => id === item._id ? rep.data.updatedTodo : item))
+      
+      setData( rep.data.todoList)
     })
     .catch( e => console.log(e))
     
