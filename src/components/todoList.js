@@ -3,6 +3,9 @@ import { useState } from "react";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import UpdateTodo from "./updateTodo";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import API from "./api";
 
 const TodoList = ( {todoData,setData}) => {
 
@@ -16,22 +19,30 @@ const TodoList = ( {todoData,setData}) => {
 
   const deleteData = async(todoId) => {
     const data = JSON.parse(localStorage.getItem("jwt"))
-    console.log(data);
-    console.log(data.user._id);
-    await axios.delete(`http://localhost:8000/delete-todo/${todoId}/${data.user._id}`)
+    await axios.delete(`${API}/delete-todo/${todoId}/${data.user._id}`)
     .then( res => {
       setData(res.data.todoList)
+      toast.success('Deleted Sucessfuly', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
     })
-    .catch()
-
+    .catch( e => console.log(e))
   }
   
   return(
-    <div className="p-6 rounded-lg mx-5">
+    <div className="bg-[#CFFCE8]">
+    <div className="p-6 rounded-lg mx-5 bg-[#49DEC4]">
       <h2 className="w-full text-3xl font-bold leading-tight text-center">Todo List</h2>
       <div className="p-6 rounded-lg mx-5 my-3 " >
       { todoData.map( (todo, index) => (
-        <div className="flex justify-between p-5 w-[70%] mx-auto rounded-lg" key={index}>
+        <div className="flex justify-between p-5 w-[60%] mx-auto rounded-lg bg-[#CFFCE8] mt-5" key={index}>
         <div >
           <h1 className="text-xl p-2 my-2 rounded">Title : {todo.todo}</h1>
           <h1 className="text-xl p-2 my-2 rounded"> tasks :</h1>
@@ -72,10 +83,12 @@ const TodoList = ( {todoData,setData}) => {
             <button onClick={() => {deleteData(todo._id)} } className="px-4 py-2 font-bold rounded bg-red-500 hover:bg-red-600 my-2">Delete</button>
           </div>
         </div>
-      </div>
-      ) )}
         
       </div>
+      ) )}
+      <ToastContainer />
+      </div>
+    </div>
     </div>
   )
 }
