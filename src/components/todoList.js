@@ -19,7 +19,11 @@ const TodoList = ( {todoData,setData}) => {
 
   const deleteData = async(todoId) => {
     const data = JSON.parse(localStorage.getItem("jwt"))
-    await axios.delete(`${API}/delete-todo/${todoId}/${data.user._id}`)
+    await axios.delete(`${API}/delete-todo/${todoId}/${data.user._id}`, {
+      headers: {
+        authorization: data.token
+      }
+    })
     .then( res => {
       setData(res.data.todoList)
       toast.success('Deleted Sucessfuly', {

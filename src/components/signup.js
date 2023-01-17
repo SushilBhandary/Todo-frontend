@@ -42,24 +42,36 @@ const Signup = ({setToSingup}) =>{
       email : email, 
       password : password
     }
-    console.log(API);
-    const res = await axios.post(`${API}/signup`,data)
-    if (res) {
-      toast.success('User Created Successfully', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
-        setName('')
-        setEmail('')
-        setPassword('')
-        setRePassword('')
-    }
+    await axios.post(`${API}/signup`,data)
+    .then( (res, err) => {
+      if (res) {
+        toast.success('User Created Successfully', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+          setName('')
+          setEmail('')
+          setPassword('')
+          setRePassword('')
+      }
+    })
+    .catch(e => toast.error(e.response.data.error, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      }))
+    
   }
 
   return(

@@ -56,7 +56,11 @@ const UpdateTodo = ({id, todoData, close, setData}) => {
       completed
     }
     const data = JSON.parse(localStorage.getItem("jwt"))
-    await axios.put(`${API}/edit-todo/${id}/${data.user._id}`,loadData)
+    await axios.put(`${API}/edit-todo/${id}/${data.user._id}`,loadData, {
+      headers: {
+        authorization: data.token
+      }
+    })
     .then( (rep) => {
       toast.success('Updated Sucessfuly', {
         position: "top-center",

@@ -33,22 +33,38 @@ const Login = ({setToSingup}) => {
     await axios.post(`${API}/login`,data)
     .then(async(res) => {
       localStorage.setItem("jwt", JSON.stringify(res.data))
-      await axios.get(`${API}/getalltodos/${res.data.user._id}`)
+      await axios.get(`${API}/getalltodos/${res.data.user._id}`, {
+        headers: {
+          authorization: res.data.token
+        }
+      })
       .then( (res) => {
         setTodoList( res.data.todoList)
         SetLogin(true)
       })
-      .catch( e => console.log(e))
-    }).catch( e => toast.error('Check the Email or Password', {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      }))
+      .catch( e => toast.error(e.response.data.error, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        })
+      )
+    }).catch( e => 
+      toast.error(e.response.data.error, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        })
+      )
   }
 
   const logout = () => {
@@ -62,7 +78,7 @@ const Login = ({setToSingup}) => {
     <div>
       { !islogin ? (
         <div className="flex items-center justify-center h-screen bg-[#CFFCE8]">
-          <div className="w-full max-w-md p-8 space-y-3 rounded-xl  ">
+          <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-900 dark:text-gray-100 ">
             <h1 className="text-2xl font-bold text-center">Login</h1>
             <form action="" className="space-y-6 ng-untouched ng-pristine ng-valid">
               <div className="space-y-1 text-sm">
@@ -75,8 +91,8 @@ const Login = ({setToSingup}) => {
               </div>
               <button onClick={submit} className="block w-full p-3 text-center rounded-sm text-white bg-[#10ABAC] focus:outline-none hover:bg-[#0B8390] rounded ">Login</button>
             </form>
-            <p className="text-xs text-center sm:px-6 ">Don't have an account?
-                <span className="underline" onClick={() => {setToSingup(true)}}> Sign up</span>
+            <p className="text-xs text-center sm:px-6 dark:text-gray-400">Don't have an account?
+                <span className="underline dark:text-gray-100" onClick={() => {setToSingup(true)}}> Sign up</span>
             </p>
           </div>
           <ToastContainer/>

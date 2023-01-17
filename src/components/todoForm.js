@@ -57,7 +57,11 @@ const TodoForm = ({addTodo}) => {
         });
     } else {
       const data = JSON.parse(localStorage.getItem("jwt"))
-      await axios.post(`${API}/createtodo/${data.user._id}`, { todoName : titel, tasks})
+      await axios.post(`${API}/createtodo/${data.user._id}`, { todoName : titel, tasks}, {
+        headers: {
+          authorization: data.token
+        }
+      })
       .then( res => {
         addTodo(res.data.todo)
       })
@@ -67,7 +71,7 @@ const TodoForm = ({addTodo}) => {
       setTasks([])
       setOpen(false)
     }
-  }
+  } 
 
   return(
     <div className="bg-[#CFFCE8]">
