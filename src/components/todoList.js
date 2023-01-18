@@ -12,11 +12,45 @@ const TodoList = ( {todoData,setData}) => {
   const [editOpen, setEditOpen] = useState(false);
   const [passIndex, setPassIndex] = useState()
   const [id, setId] =useState()
+  const [filter, setFilter] = useState('Older')
+
+  const changeByFilter = (e) => {
+    setFilter(e.target.value)
+    if (filter === 'latest') {
+      let len = todoData.length;
+      let i = 1;
+      while (i < len) {
+          let x = todoData[i];
+          let j = i - 1;
+          while (j >= 0 && new Date(todoData[j].createdAt).getTime() > new Date(x.createdAt).getTime()) {
+            todoData[j + 1] = todoData[j];
+              j = j - 1;
+          }
+          todoData[j+1] = x;
+          i = i + 1;
+      }
+      setData(todoData)
+    } else {
+      let len = todoData.length;
+      let i = 1;
+      while (i < len) {
+          let x = todoData[i];
+          let j = i - 1;
+          while (j >= 0 && new Date(todoData[j].createdAt).getTime() < new Date(x.createdAt).getTime()) {
+            todoData[j + 1] = todoData[j];
+              j = j - 1;
+          }
+          todoData[j+1] = x;
+          i = i + 1;
+      }
+      setData(todoData)
+    }
+  }
 
   const closeEditModal = () => {
     setEditOpen(false)
   };
-
+  
   const deleteData = async(todoId) => {
     const data = JSON.parse(localStorage.getItem("jwt"))
     await axios.delete(`${API}/delete-todo/${todoId}/${data.user._id}`, {
@@ -44,6 +78,10 @@ const TodoList = ( {todoData,setData}) => {
     <div className="bg-[#CFFCE8]">
     <div className="p-6 rounded-lg mx-5 bg-[#49DEC4]">
       <h2 className="w-full text-3xl font-bold leading-tight text-center">Todo List</h2>
+      <select value={filter} onChange={ e => changeByFilter(e) } className="font-medium text-lg float-right w-28 px-4 py-1 rounded-lg" >
+        <option value="Older">Older</option>
+        <option value="latest">latest</option>
+      </select>
       <div className="p-6 rounded-lg mx-5 my-3 " >
       { todoData.map( (todo, index) => (
         <div className="flex justify-between p-5 w-[60%] mx-auto rounded-lg bg-[#CFFCE8] mt-5" key={index}>
