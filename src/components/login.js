@@ -78,7 +78,7 @@ const Login = ({setToSingup}) => {
     <div>
       { !islogin ? (
         <div className="flex items-center justify-center h-screen bg-[#CFFCE8]">
-          <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-900 dark:text-gray-100 ">
+          <div className="w-full max-w-md p-8 space-y-3 rounded-xl  ">
             <h1 className="text-2xl font-bold text-center">Login</h1>
             <form action="" className="space-y-6 ng-untouched ng-pristine ng-valid">
               <div className="space-y-1 text-sm">
